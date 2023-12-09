@@ -1,5 +1,5 @@
 require './app/models/network_controller.rb'
 
-describe ProcessController do
+describe NetworkController do
   
 end
