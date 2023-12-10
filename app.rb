@@ -31,7 +31,8 @@ loop do
     puts 'Have a nice day!'
   else
     puts "sorry I didn't understand that"
-    # TODO handle edge cases and reset prompt
+    prompt.select("Is there eanything else I can help you with today?", CHOICES)
+    next
   end
 
   if choice == 'nothing'
