@@ -1,7 +1,7 @@
 class ProcessController < BaseModel
 
-  # Takes in a prompt and returns a ProcessActivity object
-  def self.start_process(prompt)
+  # Returns a ProcessActivity object
+  def self.start_process
     time = Time.now
     io = IO.popen('ruby test.rb')
     $stdout << io.read
