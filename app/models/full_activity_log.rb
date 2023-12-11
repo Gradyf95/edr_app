@@ -3,6 +3,7 @@ class FullActivityLog < BaseModel
   attr_accessor :activity
 
   delegate :<<, to: :activity
+  delegate :each, to: :activity
 
   def initialize
     @activity = []
