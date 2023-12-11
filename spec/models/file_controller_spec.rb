@@ -5,10 +5,8 @@ describe FileController do
   let(:path) { '/path/to/file' }
   let(:time) { Time.now }
   let(:file) { double('file') }
-  let(:prompt) { double('prompt') }
 
   before do
-    allow(FileController).to receive(:path_prompt).and_return(path)
     allow(File).to receive(:expand_path).and_return(path)
     allow(Time).to receive(:now).and_return(time)
   end
@@ -24,7 +22,7 @@ describe FileController do
 
       it 'creates the file' do
         expect(FileActivity).to receive(:new).with(new_params)
-        described_class.create(prompt)
+        described_class.create(path)
       end
     end
 
@@ -34,7 +32,7 @@ describe FileController do
       end
 
       it 'outputs an error' do
-        expect{ described_class.create(prompt) }.to output(a_string_including("I was unable to find that location")).to_stdout
+        expect{ described_class.create(path) }.to output(a_string_including("I was unable to find that location")).to_stdout
       end
     end
   end
@@ -48,7 +46,6 @@ describe FileController do
         allow(File).to receive(:exist?).with(path).and_return(true)
         allow(File).to receive(:open).with(path, 'r+').and_return(file)
         allow(file).to receive(:close)
-        allow(described_class).to receive(:change_prompt).with(prompt).and_return(change)
       end
 
       describe 'when modification is successful' do
@@ -58,7 +55,7 @@ describe FileController do
 
         it 'modifies the file' do
           expect(FileActivity).to receive(:new).with(new_params)
-          described_class.modify(prompt)
+          described_class.modify(path, change)
         end
       end
 
@@ -68,18 +65,19 @@ describe FileController do
         end
 
         it 'outputs an error' do
-          expect{ described_class.modify(prompt) }.to output(a_string_including("There was an error modifying the file")).to_stdout
+          expect{ described_class.modify(path,change) }.to output(a_string_including("There was an error modifying the file")).to_stdout
         end
       end
     end
 
+    # This test is causing some warnings about gem versions being out of date.
     describe 'when an invalid path is provided' do
       before do
-        allow(File).to receive(:exist?).with(path).and_return(false)
+        allow(File).to receive(:exist?).and_return(false)
       end
 
       it 'outputs an error' do
-        expect{ described_class.modify(prompt) }.to output(a_string_including("I was unable to find that file")).to_stdout
+        expect{ described_class.modify(path, change) }.to output(a_string_including("I was unable to find that file")).to_stdout
       end
     end
   end
@@ -94,7 +92,7 @@ describe FileController do
 
       it 'deletes the file' do
         expect(FileActivity).to receive(:new).with(new_params)
-        described_class.delete(prompt)
+        described_class.delete(path)
       end
     end
 
@@ -104,7 +102,7 @@ describe FileController do
       end
 
       it 'outputs an error' do
-        expect{ described_class.delete(prompt) }.to output(a_string_including("I was unable to find that file")).to_stdout
+        expect{ described_class.delete(path) }.to output(a_string_including("I was unable to find that file")).to_stdout
       end
     end
   end
