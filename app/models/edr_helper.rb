@@ -52,7 +52,8 @@ class EdrHelper
       end
    
       # TODO figure out process name and process command line
-      # `ps -eo "%p|$|%a" | grep '^\\s*#{Process.pid}'`.strip.split("|$|")[1]
+      # out = `ps -id #{Process.pid} | select name, commandline`
+      # out = `ps -eo "%p|$|%a" | grep '^\\s*#{Process.pid}'`.strip.split("|$|")[1]
       activity.user = user
       activity.process_name = $PROGRAM_NAME
       activity.process_id = Process.pid
